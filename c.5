@@ -1,0 +1,41 @@
+/*从键盘任意输入10个整数存入一个数组中，然后任意输入一个整数x，采用顺序查找法，在数组中查找该数，要求按如下函数原型编程实现查找功能。
+int Search(int a[], int n, int x);
+在主函数中调用函数Search顺序查找x，然后在主函数中打印查找结果。
+如果找到，则函数返回该数在数组中的下标位置，并在主函数中打印该值；
+如果没有找到，则返回-1，并在主函数中打印“Not found!”。
+要求必须按照题目要求和用函数编程，否则不给分。
+**要求输入10个整数的提示信息格式为：
+"Input 10 numbers:\n"（每输入一个数，键一次回车）；
+**要求输入整数x的提示信息格式为：
+"Input x:\n"
+**要求输出格式为:
+找到时的打印格式为"Subscript of x is %d\n"
+没找到时的打印格式为"Not found!\n"
+注：不能使用指针、结构体、共用体、文件、goto、枚举类型进行编程。*/
+
+
+
+#include<stdio.h>
+int main()
+{
+	int Search(int a[], int n, int x);
+	int a[10],n=10,x,t,i;
+	printf("Input 10 numbers:\n");
+	for(i=0;i<=n-1;i++) scanf("%d",&a[i]);
+	printf("Input x:\n");
+	scanf("%d",&x);
+	t=Search(a,n,x);
+	if(t==-1) printf("Not found!\n");
+	else printf("Subscript of x is %d\n",t);
+	return 0;
+} 
+
+int Search(int a[], int n, int x)
+{
+	int i,t=-1;
+	for(i=0;i<=n-1;i++)
+	{
+		if(a[i]==x) t=i;
+	}
+	return t;
+}
