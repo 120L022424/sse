@@ -1,0 +1,33 @@
+#include <stdio.h>
+#define NUM 7
+int a[NUM + 1] = {0, 5, 3, 4, 7, 3, 5, 6};
+int m[NUM + 1], l[NUM + 1];
+main()
+{                   
+    int i, n, smallest, num, k, j;
+    num = 1;
+    for (i = 1; i <= NUM; i++)
+        if (m[i] == 0)
+        {                   
+            smallest = a[i];
+            k = 1;
+            l[k] = i;
+            for (j = i + 1; j <= NUM; j++)
+                if (m[j] == 0)
+                    if (a[j] < smallest)
+                    {                   
+                        smallest = a[j];
+                        k = 0;
+                        l[++k] = j;
+                    }
+                    else if (a[j] == smallest)
+                        l[++k] = j;
+            for (j = 1; j <= k; j++)
+                m[l[j]] = num;
+            num++;
+            i = 0;
+        }
+    printf("  Player_NO  Score  Rank\n");
+    for (j = 1; j <= NUM; j++)
+        printf("   %3d    %4d   %4d\n", j, a[j], m[j]);
+}
