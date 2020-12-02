@@ -1,0 +1,32 @@
+/*输入3个数x,y,z，按从小到大顺序排序后输出。
+要求：利用指针方法实现两数互换，函数原型为：void swap(int *p1,int *p2);
+输入提示：printf("please input 3 number x,y,z");
+输入格式："%d,%d,%d"
+输出格式：printf("the sorted numbers are:%d,%d,%d\n",  );*/
+
+
+#include<stdio.h>
+int main()
+{	
+	void swap(int *p1,int *p2); 
+	int x,y,z;
+	int *p1=&x, *p2=&y, *p3=&z;
+	printf("please input 3 number x,y,z");
+	scanf("%d,%d,%d",&x,&y,&z);
+	while(x>y||x>z||y>z)
+	{
+		if(y>z) swap(p2,p3);
+		if(x>z) swap(p1,p3);
+		if(x>y) swap(p1,p2);
+	}
+	printf("the sorted numbers are:%d,%d,%d\n",x,y,z);
+	return 0;
+}
+
+void swap(int *p1,int *p2)//交换步骤 
+{
+	int t;
+	t=*p1;
+	*p1=*p2;
+	*p2=t;
+} 
