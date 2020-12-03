@@ -1,0 +1,72 @@
+/*字符串排序。调用Input函数输入10个字符串，调用Sort函数对这10个字符串按字典顺序排序，调用Print函数打印输出排序后的字符串。
+Input函数原型：
+  void Input(char str[][80],int n);
+Sort函数原型：
+  void Sort(char str[][80],int n);
+Print函数原型：
+  void Print(char str[][80],int n);
+***输入数据格式：读入可包含有空格的字符串（字符串最大长度80）
+***输出数据格式: 一行输出一个字符串*/
+
+
+
+
+#include<stdio.h>
+#include<string.h>
+int main()
+{
+	 void Input(char str[][80],int n);
+	 void Sort(char str[][80],int n);
+	 void Print(char str[][80],int n);
+	 char str[10][80];
+	 Input(str,10);
+	 Sort(str,10);
+	 Print(str,10);
+	 return 0;
+} 
+
+void Input(char str[][80],int n)
+{
+	int i,t;
+	for(i=0;i<=n-1;i++)
+		{
+			gets(str[i]);
+		}
+}	 
+	 
+void Sort(char str[][80],int n)
+{
+	int i,t,j;
+	char hi[80];
+	for(i=0;i<n-1;i++)
+	{
+		for(t=i,j=i;t<=n-1;t++)
+		{
+			if(str[t][0]<str[j][0])
+			{
+				strcpy(hi,str[t]);
+				strcpy(str[t],str[j]);
+				strcpy(str[j],hi);
+			}
+			else if(str[t][0]==str[j][0]) 
+			{
+				if(str[t][1]<str[j][1])
+				{
+				strcpy(hi,str[t]);
+				strcpy(str[t],str[j]);
+				strcpy(str[j],hi);
+				}
+			}
+		}
+	}
+}
+
+void Print(char str[][80],int n)
+{
+	int i;
+	for(i=0;i<=n-1;i++) puts(str[i]);
+}
+
+
+
+
