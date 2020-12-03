@@ -1,0 +1,90 @@
+/*验证卡布列克运算。即：任意一个四位数，只要它们各个位上的数字是不全相同的，就有这样的规律：
+（1）将组成该四位数的四个数字由大到小排列，形成由这四个数字构成的最大的四位数；
+（2）将组成该四位数的四个数字由小到大排列，形成由这四个数字构成的最小的四位数（如果四个数字中含有0，则得到的数不足四位）；
+（3）求两个数的差，得到一个新的四位数（高位零保留）。
+重复以上过程，最后得到的结果总是6174。这个数被称为卡布列克常数。请编写一个递归函数，完成以上的卡布列克运算。
+
+**输入格式要求："%d" 提示信息："Enter number:"
+**输出格式要求：" [%d]:%d-%d=%d\n"
+程序运行示例如下：
+Enter number: 1234
+ [1]:4321-1234=3087
+ [2]:8730-378=8352
+ [3]:8532-2358=6174*/
+
+
+
+
+#include<stdio.h>
+int main()
+{
+	int Kabolic(int num,int i);
+	int num;
+	printf("Enter number:");
+	scanf("%d",&num);
+	Kabolic(num,1);	
+	return 0;
+}
+
+int Kabolic(int num,int i)             //i是变换的次数
+{
+	int foreward(int num);
+	int backward(int num);
+	int fore,back,h,swap;
+	fore=foreward(num);
+	back=backward(num);
+	h=fore-back;
+	printf(" [%d]:%d-%d=%d\n",i,fore,back,h); 
+	if(h==6174) return 0;
+	else Kabolic(h,i+1);
+} 
+
+int backward(int num)           //从小到大排序，和下面的程序仅排序不同
+{
+	int a[4],i,t=num,h=0,j,swap;
+	for(i=0;i<=3;i++) 
+	{
+		a[i]=t%10;
+		t=t/10;
+	}
+	for(i=0;i<3;i++)
+	{
+		for(t=i,j=i;j<=3;j++)
+		{
+			if(a[t]>a[j]) t=j;
+		}
+		swap=a[i];
+		a[i]=a[t];
+		a[t]=swap;
+	}
+	for(i=0;i<=3;i++)                   //还原
+	{
+		h=a[i]+h*10;
+	}
+	return h;
+}
+
+int foreward(int num)
+{
+	int a[4],i,t=num,h=0,j,swap;
+	for(i=0;i<=3;i++) 
+	{
+		a[i]=t%10;
+		t=t/10;
+	}
+	for(i=0;i<3;i++)
+	{
+		for(t=i,j=i;j<=3;j++)
+		{
+			if(a[t]<a[j]) t=j;              //不同点
+		}
+		swap=a[i];
+		a[i]=a[t];
+		a[t]=swap;
+	}
+	for(i=0;i<=3;i++)
+	{
+		h=a[i]+h*10;
+	}
+	return h;
+}
