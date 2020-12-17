@@ -1,0 +1,292 @@
+在仓库管理系统中，每一个商品具有唯一的编号。因此需要对商品编号、商品的名称、数量等信息进行管理。要求利用结构体变量记录每种商品的编号、名称、数量，并建立单向链表来存放商品的信息。
+功能实现要求如下：
+（1）	写函数create()实现建立单链表来存放商品的信息，添加商品并输出所有商品信息。
+（2）	写函数show()输出所有商品的信息。
+（3）	若有商品出库或入库，需要写函数updateCount（int num）对仓库系统进行更新，先根据商品编号查询对应商品的信息，若成功查询到该商品，重新输入商品数量对商品进行更新；若不存在则输出修改失败，库存中不存在该商品。
+（4）	写函数释放链表所占内存空间
+
+结构体类型定义如下：
+struct goods{
+    char num[10];
+    char name[20];
+    int count;
+    struct goods *next;
+};
+程序运行示例1
+请依次输入每个商品编号、名称、数量
+01011 外套 13
+输入1继续输入，输入其它数字结束输入： 1
+01012 裤子 23
+输入1继续输入，输入其它数字结束输入： 1
+01013 内衣 41
+输入1继续输入，输入其它数字结束输入： 2
+所有商品的信息为：
+01011 外套 13
+01012 裤子 23
+01013 内衣 41
+请输入需要修改的商品编号：
+01013
+请重新输入该商品的数量 ：
+37
+所有商品的信息为：
+01011 外套 13
+01012 裤子 23
+01013 内衣 37
+
+程序运行示例2：
+请依次输入每个商品编号、名称、数量
+010201 饼干 23
+输入1继续输入，输入其它数字结束输入： 1
+010202 牛奶 67
+输入1继续输入，输入其它数字结束输入： 1
+010203 巧克力 78
+输入1继续输入，输入其它数字结束输入： 3
+所有商品的信息为：
+010201 饼干 23
+010202 牛奶 67
+010203 巧克力 78
+请输入需要修改的商品编号：
+010113
+修改失败.
+库存中不存在该商品.
+
+
+商品信息输入提示："请依次输入每个商品编号、名称、数量\n"
+             "输入1继续输入，输入其它数字结束输入： "
+商品信息输出提示："所有商品的信息为：\n"
+商品信息输出格式："%s %s %d\n"
+修改商品信息输入提示："请输入需要修改的商品编号：\n"
+                     输入格式：%s
+如果修改的商品找到了则输入信息提示："请重新输入该商品的数量 ：\n"，修改后输出全部商品信息。
+如果修改的商品没有找到则输出信息提示："修改失败.\n"    "库存中不存在该商品.\n"
+
+
+
+
+
+错误程序：在change函数和free函数最后一个指针那里没想清楚
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#define LEN sizeof(struct goods)
+typedef struct goods
+{
+	char num[10];
+    char name[20];
+    int count;
+    struct goods *next;
+}Goods;
+
+typedef struct List_link//存储链表初始head 最后一个元素last 
+{
+	Goods * head;
+	Goods * last;
+}List;
+
+List create(void)
+{
+	List list;
+	list.head=NULL;
+	Goods *p1,*p2;
+	int i=1;
+	p1=p2=(Goods*)malloc(LEN); 
+	//if(p==NULL) printf("链表创造失败！");
+	list.head=p1;
+	p2->next=p1;		
+	printf("请依次输入每个商品编号、名称、数量\n");
+	while(p2->next)
+	{
+		scanf("%s%s%d",p1->num,p1->name,&p1->count);
+		printf("输入1继续输入，输入其它数字结束输入： ");
+		scanf("%d",&i);
+		p1=(Goods*)malloc(LEN);
+		if(i==1) p2->next=p1;
+		else 
+		{
+			p2->next=NULL;
+			list.last=p2;
+			break;
+		}
+		p2=p1;
+	} 		
+
+	return list;
+}
+
+void Show(List list)
+{
+	Goods * p;
+	printf("所有商品的信息为：\n");
+	for(p=list.head;p;p=p->next)
+	{
+		printf("%s %s %d\n",p->num,p->name,p->count);
+	}
+}
+
+void Change(List list)
+{
+	char ID[10];
+	Goods * p;
+	int i=0;
+	printf("请输入需要修改的商品编号：\n");
+	scanf("%s",ID);
+	for(p=list.head;p->next;p=p->next)//问题一，最后一个不进行比较
+	{
+		if(strcmp(p->num,ID)==0)
+		{
+			printf("请重新输入该商品的数量 ：\n");
+			scanf("%d",&p->count);
+			Show(list);
+			i=1;
+			break;
+		}
+	}
+	if(i==0)
+	{
+		printf("修改失败.\n");
+		printf("库存中不存在该商品.\n");
+	}
+}
+
+void Free(List list)
+{
+	Goods * p=list.head;
+	Goods * p1;
+	if(p->next==NULL) 
+	{
+		free(p);
+		return; 
+	}
+	for(p1=p->next;p1;p=p->next)
+	{
+		p1=p->next;
+		free(p);
+		p=p1;
+	}
+}
+
+int main()
+{
+	List list;
+	list=create();
+	Show(list);
+	Change(list);
+	//Free(list);
+	return 0; 
+}
+
+
+
+正确程序：
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#define LEN sizeof(struct goods)
+typedef struct goods
+{
+	char num[10];
+    char name[20];
+    int count;
+    struct goods *next;
+}Goods;
+
+typedef struct List_link//存储链表初始head 最后一个元素last 
+{
+	Goods * head;
+	Goods * last;
+}List;
+
+List create(void)
+{
+	List list;
+	list.head=NULL;
+	Goods *p1,*p2;
+	int i=1;
+	p1=p2=(Goods*)malloc(LEN); 
+	//if(p==NULL) printf("链表创造失败！");
+	list.head=p1;
+	p2->next=p1;		
+	printf("请依次输入每个商品编号、名称、数量\n");
+	while(p2->next)
+	{
+		scanf("%s%s%d",p1->num,p1->name,&p1->count);
+		printf("输入1继续输入，输入其它数字结束输入： ");
+		scanf("%d",&i);
+		p1=(Goods*)malloc(LEN);
+		if(i==1) p2->next=p1;
+		else 
+		{
+			p2->next=NULL;
+			list.last=p2;
+			break;
+		}
+		p2=p1;
+	} 		
+
+	return list;
+}
+
+void Show(List list)
+{
+	Goods * p;
+	printf("所有商品的信息为：\n");
+	for(p=list.head;p;p=p->next)
+	{
+		printf("%s %s %d\n",p->num,p->name,p->count);
+	}
+}
+
+void Change(List list)
+{
+	char ID[10];
+	Goods * p;
+	int i=0;
+	printf("请输入需要修改的商品编号：\n");
+	scanf("%s",ID);
+	for(p=list.head;p->next;p=p->next)
+	{
+		if(strcmp(p->num,ID)==0)
+		{	
+			i=1;
+			break;
+		}
+	}
+	if(strcmp(p->num,ID)==0)
+		{	
+			i=1;
+		}
+	if(i==1)
+	{
+		printf("请重新输入该商品的数量 ：\n");
+		scanf("%d",&p->count);
+		Show(list);
+	}
+	if(i==0)
+	{
+		printf("修改失败.\n");
+		printf("库存中不存在该商品.\n");
+	}
+}
+
+void Free(List list)
+{
+	Goods * p=list.head;
+	Goods * p1;
+	for(p1=p->next;p1->next;p=p->next)
+	{
+		p1=p->next;
+		free(p);
+		p=p1;
+	}
+	free(p);
+}
+
+int main()
+{
+	List list;
+	list=create();
+	Show(list);
+	Change(list);
+	//Free(list);
+	return 0; 
+}
