@@ -1,0 +1,331 @@
+    /*用链表实现对学生成绩进行存储、插入及显示功能，学生包括ID和score属性。
+     结构体类型定义如下：
+    struct grade {
+      int score;
+      char ID[6];
+      struct grade *next;
+    };
+     （1）写函数创建单向链表并存储学生成绩信息，输入ID和score按逗号隔开，先输入score后输入ID，当score<0时链表创建完成，并输出创建后的链表信息。
+     （2）写函数实现在第n个结点后面插入一个新结点，并输出插入新结点后的链表信息。
+     （3）写函数释放链表所占内存空间。
+    （在主函数依次调用各函数即可）
+
+    程序运行示例：
+    输入学生成绩和ID：
+    23,01
+    45,02
+    67,04
+    -1
+    创建的链表：
+    23,01
+    45,02
+    67,04
+    请输入要插入结点的成绩和ID:
+    78,02
+    请输入要插入结点的位置,在这个位置后面插入新结点：
+    3
+    插入后的链表：
+    23,01
+    45,02
+    67,04
+    78,02
+
+    程序运行示例2：
+    输入学生成绩和ID：
+    23,01
+    45,02
+    67,04
+    -1
+    创建的链表：
+    23,01
+    45,02
+    67,04
+    请输入要插入结点的成绩和ID:
+    78,02
+    请输入要插入结点的位置,在这个位置后面插入新结点：
+    7
+    插入的节点不存在！插入后的链表：
+    23,01
+    45,02
+    67,04
+
+    输入提示："输入学生成绩和ID：\n"
+    输入格式： "%d,%s"
+    输出提示："创建的链表：\n"
+    输出格式："%d,%s\n"
+    输入提示："请输入要插入结点的成绩和ID:\n"
+    输入格式："%d,%s"
+    输入提示："请输入要插入结点的位置,在这个位置后面插入新结点：\n"
+    输入格式：%d
+    (如果输入的要插入位置不存在则输出提示：  "插入的节点不存在！")
+    输出提示："插入后的链表：\n"
+    输出格式："%d,%s\n"*/
+    
+    
+    /*用链表实现对学生成绩进行存储、插入及显示功能，学生包括ID和score属性。
+     结构体类型定义如下：
+    struct grade {
+      int score;
+      char ID[6];
+      struct grade *next;
+    };
+     （1）写函数创建单向链表并存储学生成绩信息，输入ID和score按逗号隔开，先输入score后输入ID，当score<0时链表创建完成，并输出创建后的链表信息。
+     （2）写函数实现在第n个结点后面插入一个新结点，并输出插入新结点后的链表信息。
+     （3）写函数释放链表所占内存空间。
+    （在主函数依次调用各函数即可）
+
+    程序运行示例：
+    输入学生成绩和ID：
+    23,01
+    45,02
+    67,04
+    -1
+    创建的链表：
+    23,01
+    45,02
+    67,04
+    请输入要插入结点的成绩和ID:
+    78,02
+    请输入要插入结点的位置,在这个位置后面插入新结点：
+    3
+    插入后的链表：
+    23,01
+    45,02
+    67,04
+    78,02
+
+    程序运行示例2：
+    输入学生成绩和ID：
+    23,01
+    45,02
+    67,04
+    -1
+    创建的链表：
+    23,01
+    45,02
+    67,04
+    请输入要插入结点的成绩和ID:
+    78,02
+    请输入要插入结点的位置,在这个位置后面插入新结点：
+    7
+    插入的节点不存在！插入后的链表：
+    23,01
+    45,02
+    67,04
+
+    输入提示："输入学生成绩和ID：\n"
+    输入格式： "%d,%s"
+    输出提示："创建的链表：\n"
+    输出格式："%d,%s\n"
+    输入提示："请输入要插入结点的成绩和ID:\n"
+    输入格式："%d,%s"
+    输入提示："请输入要插入结点的位置,在这个位置后面插入新结点：\n"
+    输入格式：%d
+    (如果输入的要插入位置不存在则输出提示：  "插入的节点不存在！")
+    输出提示："插入后的链表：\n"
+    输出格式："%d,%s\n"*/
+    
+    
+    #include<stdio.h>
+#include<stdlib.h>
+#define LEN sizeof(struct grade)
+struct grade
+{
+	int score;
+	char ID[6];
+	struct grade *next;
+};
+int i=0;//i为链表数目 
+
+struct grade * Create(void)
+{
+	struct grade *p1,*p2,*head=NULL;
+	p1=p2=(struct grade*)malloc(LEN) ;
+	if(p1!=NULL)
+	{
+		printf("输入学生成绩和ID：\n");
+		scanf("%d,%s",&p1->score,p1->ID);
+		i++;
+		if((p1->score)>0&&i==1) head=p1;
+		while((p1->score)>0)
+		{
+			p2->next=p1;
+			p2=p1;
+			p1=(struct grade*)malloc(LEN);
+			scanf("%d,%s",&p1->score,p1->ID);
+			i++;
+		}
+		p2->next=NULL;
+		i--;
+		return head;
+	}
+}
+
+void Printf(struct grade*head)
+{
+	struct grade*n=head;
+	do
+	{
+		printf("%d,%s\n",n->score,n->ID);
+		n=n->next;
+	}while(n->next!=NULL);
+	printf("%d,%s\n",n->score,n->ID);
+}
+
+struct grade* Insert(struct grade*head)
+{
+	
+	struct grade*n=head,*y,*p;
+	int z,m;
+	printf("请输入要插入结点的成绩和ID:\n");
+	p=(struct grade*)malloc(LEN);
+	scanf("%d,%s",&p->score,p->ID);
+	printf("请输入要插入结点的位置,在这个位置后面插入新结点：\n");
+	scanf("%d",&z);
+	if(z<=i&&z>0)
+	{
+		for(m=z;m>=1;m--) 
+		{
+			n=n->next;//现在的n是原来第z+1的节点的指针 
+		}
+		p->next=n;
+		for(m=z,n=head;m>=2;m--)
+		{
+			n=n->next;//现在n是原来第z个节点的指针 
+		}
+		n->next=p; 
+	}
+	if(z==0)
+	{
+		p->next=head;
+		head=p;
+	}
+	else printf("插入的节点不存在！");
+	return head;
+}
+
+void Free(struct grade*head)
+{
+	if(head->next!=NULL) Free(head->next);
+	if(head->next==NULL) free(head);
+}
+
+int main()
+{
+	struct grade*p;
+	p=Create();
+	printf("创建的链表：\n");
+	Printf(p);
+	p=Insert(p);
+	printf("插入后的链表：\n");
+	Printf(p);
+	Free(p);
+	return 0;
+}
+
+/*标准答案
+#include <stdio.h>
+#include <stdlib.h>
+#include<string.h>
+struct grade {
+    int score;
+    char ID[6];
+    struct grade *next;
+};
+typedef struct grade NODE; 
+struct grade *create();  
+NODE *insert(NODE *head, NODE *pnew, int i);  
+void display(NODE *head);  
+void Pfree(NODE *head);   
+int main() {
+    struct grade *head, *pnew;//1
+    int n;
+    head = create();//1
+    if (head == NULL)
+        return 0;
+    printf("创建的链表：\n");
+    display(head); //1
+    pnew=(NODE *)malloc(sizeof(NODE));
+    printf("请输入要插入结点的成绩和ID:\n");
+    scanf("%d,%s",&pnew->score,pnew->ID);//1
+    getchar();
+    printf("请输入要插入结点的位置,在这个位置后面插入新结点：\n");
+    scanf("%d",&n); //1
+    head=insert(head, pnew, n);//1
+    printf("插入后的链表：\n");
+    display(head);//1
+    Pfree(head);//1
+    return 0;
+}
+struct grade *create()  //2
+{
+    NODE *head, *tail, *pnew;//1
+    int score;
+    char ID[6];
+    head = (NODE *)malloc(sizeof(NODE));
+    if (head == NULL) {
+        printf("创建失败！");
+        return NULL;
+    }
+    head->next = NULL;
+    tail = head;//1
+    printf("输入学生成绩和ID：\n");
+    while (1)  //1
+    {
+        scanf("%d,%s",&score,ID);
+        if (score<0)//1
+            break;
+        pnew = (NODE *)malloc(sizeof(NODE));//1
+        if (pnew == NULL) {
+            printf("创建失败！");
+            return NULL;
+        }
+        pnew->score = score;
+        strcpy(pnew->ID, ID);
+        pnew->next = NULL;
+        tail->next = pnew;//1
+        tail = pnew;//1
+    }
+ 
+    return head;//1
+}
+NODE *insert(NODE *head, NODE *pnew, int i) //2
+{
+    NODE *p; //1
+    int j;
+ 
+    p = head;
+    for (j = 0; j<i&&p != NULL; j++)//1
+        p = p->next;//1
+ 
+    if (p == NULL)//1
+    {
+        printf("插入的节点不存在！");
+        return head; //1
+    }
+ 
+    pnew->next = p->next;//1
+    p->next = pnew; //1
+    return head; //1
+}
+ 
+void display(NODE *head) //2
+{
+    NODE *p; //1
+    for (p = head->next; p != NULL; p = p->next)//2
+        printf("%d,%s\n", p->score, p->ID);//1
+}
+ 
+void Pfree(NODE *head)  //2
+{
+    NODE *p, *q;//1
+    p = head;
+    while (p->next != NULL)//1
+    {
+        q = p->next;
+        p->next = q->next;//1
+        free(q); //1
+    }
+    free(p);
+}
+*/
