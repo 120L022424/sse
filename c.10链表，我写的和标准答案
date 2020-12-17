@@ -126,7 +126,12 @@
     输出格式："%d,%s\n"*/
     
     
-    #include<stdio.h>
+    
+    
+    
+    
+错误示例
+#include<stdio.h>
 #include<stdlib.h>
 #define LEN sizeof(struct grade)
 struct grade
@@ -222,6 +227,14 @@ int main()
 	Free(p);
 	return 0;
 }
+
+
+
+
+
+
+
+
 
 /*标准答案
 #include <stdio.h>
@@ -329,3 +342,120 @@ void Pfree(NODE *head)  //2
     free(p);
 }
 */
+
+
+
+
+我自己做的正确版本：
+#include<stdio.h>
+#include<stdlib.h>
+#define LEN sizeof(struct grade)
+typedef struct grade
+{
+	int score;
+	char ID[6];
+	struct grade *next;
+}Str;
+
+typedef struct List_link
+{
+	struct grade * head;
+	struct grade * last;
+	int num;
+}List;
+
+List Create(void)
+{
+	List list;
+	int num=0;
+	struct grade *p1,*p2,*head=NULL;
+	p1=p2=head=(Str*)malloc(LEN);
+	printf("输入学生成绩和ID：\n");
+	scanf("%d,%s",&p1->score,p1->ID);
+	num++;
+	while(p2->score>=0)
+	{		
+		p1=p2;
+		p2=(Str*)malloc(LEN);
+		scanf("%d,%s",&p2->score,p2->ID);
+		p1->next=p2;
+		num++;
+	}
+	num--;
+	p1->next=NULL;
+	list.last=p1;
+	list.head=head;
+	list.num=num;
+	return list;
+}
+
+void Printf(List list)
+{
+	Str * n=list.head;
+	do
+	{
+		printf("%d,%s\n",n->score,n->ID);
+		n=n->next;
+	}while(n->next!=NULL);
+	printf("%d,%s\n",n->score,n->ID);
+}
+
+List Insert(List list)
+{
+	Str *n=list.head,*p;
+	int z,m;
+	printf("请输入要插入结点的成绩和ID:\n");
+	p=(Str*)malloc(LEN);
+	scanf("%d,%s",&p->score,p->ID);
+	printf("请输入要插入结点的位置,在这个位置后面插入新结点：\n");
+	scanf("%d",&z);
+	if(z<=list.num&&z>0)
+	{
+		for(m=z;m>=1;m--) 
+		{
+			n=n->next;//现在的n是原来第z+1的节点的指针 
+		}
+		p->next=n;
+		for(m=z,n=list.head;m>=2;m--)
+		{
+			n=n->next;//现在n是原来第z个节点的指针 
+		}
+		n->next=p; 
+	}
+	else if(z==0)
+	{
+		p->next=list.head;
+		list.head=p;
+	}
+	else 
+	{
+		printf("插入的节点不存在！");
+	}
+	return list;
+}
+
+void Free(List list)
+{
+	Str *p1,*p2;
+	p1=p2=list.head;
+	while(p1->next)
+	{
+		p2=p1->next;
+		free(p1);
+		p1=p2;
+	}
+	free(p1);
+}
+
+int main()
+{
+	List list;
+	list=Create();
+	printf("创建的链表：\n");
+	Printf(list);
+	list=Insert(list);
+	printf("插入后的链表：\n");
+	Printf(list);
+	Free(list);
+	return 0;
+}
