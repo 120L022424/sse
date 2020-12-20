@@ -1,0 +1,191 @@
+模拟商场会员卡，对会员姓名、编号、积分进行管理，利用结构体变量记录会员的姓名、编号和积分，建立单向链表来存储会员的信息。
+要求实现如下功能：
+（1）写函数create()实现建立单链表来存放会员的信息，如果输入大写‘Y’字符则继续创建结点存储会员信息，否则按任意键结束输入。
+（2）写自定义函数输出链表中会员的信息。
+（3）写自定义函数按照编号寻找要更新会员的信息，如果找到则修改这个会员的信息，并输出所有的会员的信息，如果没有找到，输出找不到此联系人。
+（4）写自定义函数释放链表所占内存。
+（在主函数依次调用各函数即可）
+  结构体类型定义如下：
+ struct member{
+    char name[20];
+    char num[20];
+    int total;
+    struct member *next;
+   };
+
+程序运行示例1：
+请依次输入每个会员的编号、姓名、积分： 
+01 zhang 1111
+是否继续输入,按Y键继续输入，其他键就结束.
+Y
+请依次输入每个会员的编号、姓名、积分： 
+02 wang 2222
+是否继续输入,按Y键继续输入，其他键就结束.
+Y
+请依次输入每个会员的编号、姓名、积分： 
+03 zhao 3333
+是否继续输入,按Y键继续输入，其他键就结束.
+n
+请输入要修改的会员编号：
+03
+请输入要修改的编号：03
+请输入要修改的姓名：zhaoli
+请输入要修改的积分：5555
+请依次输出每个会员的编号、姓名、积分： 
+01 zhang 1111
+02 wang 2222
+03 zhaoli 5555
+
+程序运行示例2：
+请依次输入每个会员的编号、姓名、积分： 
+01 zhang 1111
+是否继续输入,按Y键继续输入，其他键就结束.
+Y
+请依次输入每个会员的编号、姓名、积分： 
+02 wang 2222
+是否继续输入,按Y键继续输入，其他键就结束.
+Y
+请依次输入每个会员的编号、姓名、积分： 
+03 zhao 3333
+是否继续输入,按Y键继续输入，其他键就结束.
+n
+请输入要修改的会员编号：
+04
+修改失败.
+不存在此联系人.
+
+输入提示："请依次输入每个会员的编号、姓名、积分： \n"
+输入格式："%s %s %d"
+输入提示："是否继续输入,按Y键继续输入，其他键就结束.\n"
+输入提示："请输入要修改的会员编号：\n"
+输入格式：%s
+如果找到了要修改的人则有如下提示：
+输入提示："请输入要修改的编号："
+输入格式：%s
+输入提示："请输入要修改的姓名："
+输入格式：%s
+输入提示："请输入要修改的积分："
+输入格式：%d
+没有找到则提示："修改失败.\n不存在此联系人.\n"
+输出提示："请依次输出每个会员的编号、姓名、积分： \n"
+输出格式："%s %s %d\n"
+
+
+
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+# define LEN sizeof(struct member)
+
+typedef struct member{
+    char name[20];
+    char num[20];
+    int total;
+    struct member *next;
+}Member;
+
+typedef struct List_linked{
+	Member * head;
+	Member * last;
+	int amount;
+}List;
+
+List  create(void)
+{
+	List list;
+	Member * p1,* p2;
+	int n=0;
+	p1=p2=(Member*)malloc(LEN);
+	list.head=p1;
+	p1->name[0]='Y';                       //第一个错误，name【0】而不是name【1】，数组易错点；
+	while(p1->name[0]=='Y')
+	{
+		p2->next=p1;
+		p2=p1;
+		printf("请依次输入每个会员的编号、姓名、积分： \n");
+		scanf("%s %s %d",p1->num,p1->name,&p1->total);
+		p1=(Member*)malloc(LEN);
+		printf("是否继续输入,按Y键继续输入，其他键就结束.\n");
+		scanf("%s",p1->name);
+		n++;
+	}
+	p2->next=NULL;
+	list.last=p2;
+	list.amount=--n;
+	free(p1);
+	return list;
+}
+
+void Printf(List list)
+{
+	Member * p=list.head;
+	printf("请依次输出每个会员的编号、姓名、积分： \n");
+	while(p->next)
+	{
+		printf("%s %s %d\n",p->num,p->name,p->total);
+		p=p->next;
+	}
+	printf("%s %s %d\n",p->num,p->name,p->total);
+}
+
+void Change(List list)
+{
+	char num[20]={'\0'};
+	Member * p=list.head;
+	int n=0;
+	printf("请输入要修改的会员编号：\n");
+	scanf("%s",num);
+	while(p->next)
+	{
+		if(strcmp(num,p->num)==0)                 //错误二，字符串比较用string函数实现。
+		{
+			printf("请输入要修改的编号：");
+			scanf("%s",p->num);
+			printf("请输入要修改的姓名：");
+			scanf("%s",p->name);
+			printf("请输入要修改的积分：");
+			scanf("%d",&p->total);
+			Printf(list);
+			n=1;
+			break;
+		}
+		p=p->next;
+	}
+	if(n!=1&&strcmp(num,p->num)==0)
+	{
+		printf("请输入要修改的编号：");
+		scanf("%s",p->num);
+		printf("请输入要修改的姓名：");
+		scanf("%s",p->name);
+		printf("请输入要修改的积分：");
+		scanf("%d",&p->total);
+		Printf(list);
+		n=1;
+	}
+	if(n==0)
+	{
+		printf("修改失败.\n不存在此联系人.\n");
+	}
+}
+   
+void Free(List list)
+{
+	Member * p1,* p2;
+	p1=p2=list.head;
+	while(p1->next)
+	{
+		p2=p1->next;
+		free(p1);
+		p1=p2;
+	}
+	free(p1);
+}
+
+int main(void)
+{
+	List list;
+	list=create();
+	Change(list);
+	Free(list);
+}
